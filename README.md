@@ -185,7 +185,7 @@ y_test = test['W']
 ```
 
 ### Select model and error metric
-+ linear/Ridge regression
++ linear/Ridge regression(Linear regression + regularizer)
 + mean absolute error
 
 steps:
