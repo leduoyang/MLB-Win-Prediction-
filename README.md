@@ -1,5 +1,6 @@
 # MLB-Win-Prediction
 Predict MLB wins per season based on past data by regression model with some analyses
+
 source : https://www.datacamp.com/community/tutorials/scikit-learn-tutorial-baseball-1
 
 ## Prerequisites
@@ -124,6 +125,74 @@ plt.ylabel('MLB Runs per Game')
 
 plt.show()
 ```
+
+## Adding Features
++ era
+As we can see on above plot, the scoring trends are quite different with respect to era
+So we can create new feature that indicate a specifi era for each row of data based on the 'yearID'
+(solved with get_dummies/one-hot encoding
+
++ run per game of specified year
+add run per game information for each row by using 'yearID' and function 'apply()' 
+
++ run per game for each team
++ run allowed per game for each team
+#### we can show the scatter plot about RPG and RAPG vs win
+
++ labels derived from a K-means clustering algorithm provided by sklearn
+create a dataframe for clustering which leaves out the target variable('W')
+```
+attributes = ['G','R','AB','H','2B','3B','HR','BB','SO','SB','RA','ER','ERA','CG',
+'SHO','SV','IPouts','HA','HRA','BBA','SOA','E','DP','FP','era_1','era_2','era_3','era_4','era_5','era_6','era_7','era_8','decade_1910','decade_1920','decade_1930','decade_1940','decade_1950','decade_1960','decade_1970','decade_1980','decade_1990','decade_2000','decade_2010','R_per_game','RA_per_game','mlb_rpg']
+
+data_attributes = df[attributes]
+```
+Use sklearn’s 'silhouette_score()' function to determine how many clusters we want
+(This function returns the mean silhouette coefficient over all samples. You want a higher silhouette score, and the score decreases as more clusters are added)
+
+Execute K-means model :
+set the number of cluster to 6
+random state to 1
+fit_transform() : determine the Euclidian distances for each data point
+
+visualized the clusters with a scatter plot
+
+
+#### before getting into any machine learing models...
+we can use corr() method from Pandas to see how each variables/features is correlated with target variable
+```
+df.corr()['W']
+```
+
+## Build Model
+### pre-processing
++ create new dataframe using only variables to be included in models
+```
+numeric_cols = ['G','R','AB','H','2B','3B','HR','BB','SO','SB','RA','ER','ERA','CG','SHO','SV','IPouts','HA','HRA','BBA','SOA','E','DP','FP','era_1','era_2','era_3','era_4','era_5','era_6','era_7','era_8','decade_1910','decade_1920','decade_1930','decade_1940','decade_1950','decade_1960','decade_1970','decade_1980','decade_1990','decade_2000','decade_2010','R_per_game','RA_per_game','mlb_rpg','labels','W']
+
+data = df[numeric_cols]
+```
+
++ split data to training and testing data
+```
+train = data.sample(frac=0.75, random_state=1)
+test = data.loc[~data.index.isin(train.index)]
+
+x_train = train[attributes]
+y_train = train['W']
+x_test = test[attributes]
+y_test = test['W']
+```
+
+### Select model and error metric
++ linear/Ridge regression
++ mean absolute error
+
+steps:
+1. import LinearRegression/RidgeCV and mean_absolute_error from sklearn.linear_model and sklearn.metrics respectively
+2. create a model lr/rrm and fit the model
+3. make predictions and determinie MAE of the model
+
 
 
 
